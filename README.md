@@ -1,160 +1,176 @@
-# Dynamic Broken Link Validator for Redbus.com
+# Broken Link Validator with Red Highlight (Cypress)
 
-A Cypress-based automated tool to validate all links on Redbus.com, identify broken links, highlight them in red, capture screenshots, and generate detailed reports.
+![Cypress](https://img.shields.io/badge/Tested%20With-Cypress-brightgreen)
+![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)
+![Status](https://img.shields.io/badge/Status-Stable-success)
+![Automation](https://img.shields.io/badge/Type-Web%20Automation-blue)
 
-## Features
+A powerful **broken link validation utility** built using Cypress that:
 
-- ✅ **Automatic Link Discovery**: Extracts all links from Redbus homepage
-- ✅ **HTTP Status Validation**: Checks each link's HTTP status code
-- ✅ **Visual Highlighting**: Highlights broken links in red with borders
-- ✅ **Screenshot Capture**: Takes screenshots of each broken link
-- ✅ **Detailed Logging**: Generates comprehensive logs for both valid and broken links
-- ✅ **Multiple Report Formats**: Creates both JSON and text-based reports
+- ✅ Scans all `<a>` tags on a web page  
+- ✅ Detects valid, redirect, and broken links  
+- ✅ **Highlights broken links in RED directly on the UI**  
+- ✅ Skips invalid and non-http links  
+- ✅ Avoids screenshot timeout issues  
+- ✅ Prints a clean execution summary at the end  
+- ✅ Works perfectly with **dynamic error demo sites** like DeadLinkCity  
 
-## Installation
+---
 
-1. Clone or navigate to the project directory:
-```bash
-cd c:\Users\mvsar\Projects\DynamicBrokenLinks
+## 🚀 Features
+
+**🔍 Automatic Detection of:**
+- Valid links (200–299)
+- Redirect links (300–399)
+- Broken links (400+ and network failures)
+
+**🎯 Smart Skipping of:**
+- `mailto:`, `tel:`, `javascript:`
+- Empty or invalid `href`
+
+**🔴 Visual Red Highlighting of Broken Links**
+
+**🧠 Uses `fetch()` Instead of `cy.request()` to:**
+- Prevent test failures on server-side 405/403 errors
+- Avoid `cy.screenshot()` timeout issues
+
+**📊 Final Summary Report** printed in Cypress logs
+
+---
+
+## 📁 Project Structure
+
+```
+cypress/
+└── e2e/
+    └── broken-link-validator.cy.js
+cypress.config.js
+package.json
 ```
 
-2. Install dependencies (already done):
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd <project-folder>
+```
+
+### 2️⃣ Install Dependencies
+
 ```bash
 npm install
 ```
 
-## Project Structure
+### 3️⃣ Ensure Cypress is Installed
 
-```
-DynamicBrokenLinks/
-├── cypress/
-│   ├── e2e/
-│   │   └── broken-link-validator.cy.js    # Main test script
-│   ├── screenshots/                        # Screenshots of broken links
-│   ├── reports/                            # Generated reports
-│   │   ├── broken-links-report.json       # JSON format report
-│   │   └── broken-links-report.txt        # Text format report
-│   └── support/
-│       ├── commands.js                     # Custom Cypress commands
-│       └── e2e.js                          # Support file loader
-├── cypress.config.js                       # Cypress configuration
-└── package.json                            # Project dependencies
-```
-
-## Usage
-
-### Run the Broken Link Validator
-
-**Option 1: Headed Mode (Recommended - See the browser)**
 ```bash
-npm run validate:links
+npx cypress -v
 ```
 
-**Option 2: Headless Mode (Faster)**
+---
+
+## 🧪 How to Run the Test
+
+**Open Test Runner:**
+
 ```bash
-npm test
+npx cypress open
 ```
 
-**Option 3: Interactive Mode (Cypress Test Runner)**
+**Run in Headless Mode:**
+
 ```bash
-npm run cypress:open
-```
-Then select the `broken-link-validator.cy.js` test from the UI.
-
-## How It Works
-
-1. **Navigate to Redbus**: Opens https://www.redbus.com
-2. **Close Popups**: Automatically closes any modal dialogs
-3. **Extract Links**: Finds all `<a>` tags with `href` attributes
-4. **Validate Each Link**: Makes HTTP requests to check status codes
-5. **Categorize Links**:
-   - **Valid**: Status codes 200-399 (logged in green)
-   - **Broken**: Status codes 400+ or network errors (logged in red)
-6. **Highlight Broken Links**: Applies red background and border styling
-7. **Capture Screenshots**: Takes viewport screenshots of each broken link
-8. **Generate Reports**: Creates detailed JSON and text reports
-
-## Output
-
-### Console Logs
-During execution, you'll see real-time logs:
-```
-✓ [1/150] Valid Link (200): https://www.redbus.com/about
-✗ [2/150] BROKEN Link (404): https://www.redbus.com/invalid-page
+npx cypress run --spec cypress/e2e/broken-link-validator.cy.js
 ```
 
-### Screenshots
-Located in `cypress/screenshots/broken-link-validator.cy.js/`
-- Named as: `broken-link-{index}-status-{statusCode}.png`
-- Example: `broken-link-5-status-404.png`
+---
 
-### Reports
+## ✅ Test Target (Current)
 
-**JSON Report** (`cypress/reports/broken-links-report.json`):
-```json
-{
-  "timestamp": "2025-11-29T14:40:00.000Z",
-  "totalLinks": 150,
-  "validLinksCount": 145,
-  "brokenLinksCount": 5,
-  "validLinks": [...],
-  "brokenLinks": [...]
-}
+```javascript
+cy.visit('http://www.deadlinkcity.com/')
 ```
 
-**Text Report** (`cypress/reports/broken-links-report.txt`):
+You can replace this with any real production or QA URL.
+
+---
+
+## 🔴 How Red Highlighting Works
+
+When a broken link is detected:
+
+The element receives:
+- `border: 3px solid red`
+- `background-color: #ffcccc`
+
+This makes broken links instantly visible on the page. Network failures, 403, 404, 405 → all are treated as ❌ broken
+
+---
+
+## 📊 Final Summary Output (Example)
+
 ```
-=== REDBUS BROKEN LINK VALIDATION REPORT ===
-Generated: 11/29/2025, 8:10:00 PM
-
-Total Links Found: 150
-Valid Links: 145
-Broken Links: 5
-Success Rate: 96.67%
-
---- BROKEN LINKS ---
-[12] HTTP 404: https://www.redbus.com/page1
-[45] HTTP 500: https://www.redbus.com/page2
-...
+===== ✅ Link Check Summary =====
+Links Checked (http/https): 26
+Valid Links: 12
+Redirect Links: 3
+Broken Links: 11
+Skipped Links: 7
 ```
 
-## Configuration
+---
 
-Edit `cypress.config.js` to customize:
-- `baseUrl`: Change target website
-- `viewportWidth/Height`: Adjust browser viewport
-- `defaultCommandTimeout`: Modify timeout for commands
-- `pageLoadTimeout`: Adjust page load timeout
+## 🛑 Screenshot Timeout Issue – Fixed
 
-## Troubleshooting
+To permanently prevent this error:
 
-**Issue**: Too many links causing timeout
-- **Solution**: Reduce the number of links checked or increase timeout in config
+```
+CypressError: cy.screenshot() timed out waiting 30000ms to complete
+```
 
-**Issue**: Popups blocking link extraction
-- **Solution**: Update popup selector in the test script
+Add this to your `cypress.config.js`:
 
-**Issue**: Rate limiting from Redbus
-- **Solution**: Add delays between requests using `cy.wait()`
+```javascript
+const { defineConfig } = require('cypress')
 
-## Technical Details
+module.exports = defineConfig({
+  e2e: {
+    screenshotOnRunFailure: false,
+  },
+})
+```
 
-- **Framework**: Cypress 15.7.0
-- **Language**: JavaScript (CommonJS)
-- **Browser**: Chrome (configurable)
-- **Node.js**: Compatible with latest LTS versions
+✅ This guarantees stable execution even on demo error pages.
 
-## Notes
+---
 
-- The script validates links found on the **homepage only**
-- Some links may be dynamically loaded and might not be captured
-- External links are also validated
-- Screenshots are taken in viewport mode (visible area only)
+## 🧠 Key Technical Decisions
 
-## Author
+| Problem | Solution |
+|---------|----------|
+| 405 / 403 breaking the test | Replaced cy.request() with fetch() |
+| Screenshot timeout crash | Disabled screenshot on failure |
+| DeadLinkCity simulated error URLs | Handled as valid broken cases |
+| DOM validation | Used CSS injection for red highlight |
 
-Created for automated link validation testing on Redbus.com
+---
 
-## License
+## 🛠 Customization Options
 
-ISC
+- ✅ Export broken links to CSV
+- ✅ Add Mochawesome / Allure reporting
+- ✅ Convert into `cy.checkBrokenLinks()` custom command
+- ✅ Fail test if broken link count > 0
+- ✅ Capture screenshot of each broken link only
+
+---
+
+## 👨‍💻 Author
+
+**Saran Kumar**  
+QA Automation Engineer | SDET | Cypress | Playwright | Selenium  
+Passionate about building robust and visual automation utilities
