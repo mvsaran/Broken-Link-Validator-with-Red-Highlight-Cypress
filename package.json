@@ -1,0 +1,19 @@
+{
+  "name": "dynamicbrokenlinks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run",
+    "test:headed": "cypress run --headed --browser chrome",
+    "cypress:open": "cypress open",
+    "validate:links": "cypress run --spec cypress/e2e/broken-link-validator.cy.js --headed --browser chrome"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "cypress": "^15.7.0"
+  }
+}
